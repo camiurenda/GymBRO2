@@ -2,7 +2,7 @@
 
 ## Core Features:
 
-- User Authentication: Secure user registration and login system using email and password. Note: currently only Google Fonts are supported.
+- User Authentication: Secure user registration and login system using email and password.
 - XLSX Plan Import: Allow users to import training plans from XLSX files.
 - Intelligent Plan Processing: Use AI tool to analyze the imported XLSX file to extract training days, exercises for each day, and exercise names, cleaning the text of sets/reps.
 - Daily Routine Selection: Display a list of available training days (Day 1, Day 2, etc.) for the user to select their daily workout.

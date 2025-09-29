@@ -21,7 +21,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/shared/Logo';
-import { LayoutDashboard, BarChart3, Upload, LogOut, User as UserIcon } from 'lucide-react';
+import { LayoutDashboard, BarChart3, Upload, LogOut, User as UserIcon, BrainCircuit } from 'lucide-react';
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
@@ -58,6 +58,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const navItems = [
     { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { href: '/progress', icon: BarChart3, label: 'Progress' },
+    { href: '/recommendations', icon: BrainCircuit, label: 'AI Coach' },
     { href: '/import', icon: Upload, label: 'Import Plan' },
   ]
 
