@@ -20,7 +20,7 @@ export default function RecommendationsPage() {
 
   const handleGenerateRecommendations = async () => {
     if (!user) {
-      toast({ title: 'Authentication Error', description: 'You must be logged in to get recommendations.', variant: 'destructive' });
+      toast({ title: 'Error de autenticación', description: 'Tenés que iniciar sesión para obtener recomendaciones.', variant: 'destructive' });
       return;
     }
     setLoading(true);
@@ -48,7 +48,7 @@ export default function RecommendationsPage() {
       });
 
       if (logs.length < 5) {
-        toast({ title: 'Not Enough Data', description: 'Please log at least 5 exercises to receive personalized recommendations.', variant: 'destructive' });
+        toast({ title: 'Datos insuficientes', description: 'Por favor, registrá al menos 5 ejercicios para recibir recomendaciones personalizadas.', variant: 'destructive' });
         setLoading(false);
         return;
       }
@@ -65,13 +65,13 @@ export default function RecommendationsPage() {
         setRecommendations(result.recommendations);
         setHasGenerated(true);
       } else {
-        toast({ title: 'Analysis Complete', description: "The AI couldn't find any specific recommendations at this time. Keep up the good work!", });
+        toast({ title: 'Análisis completo', description: "La IA no encontró ninguna recomendación específica en este momento. ¡Seguí así!", });
         setHasGenerated(true);
       }
 
     } catch (error) {
-      console.error("Error generating recommendations:", error);
-      toast({ title: 'AI Error', description: 'An unexpected error occurred while generating recommendations.', variant: 'destructive' });
+      console.error("Error al generar recomendaciones:", error);
+      toast({ title: 'Error de IA', description: 'Ocurrió un error inesperado al generar las recomendaciones.', variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -80,14 +80,14 @@ export default function RecommendationsPage() {
   return (
     <div className="container mx-auto max-w-3xl">
       <div className="mb-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-3xl font-bold font-headline">AI Coach</h1>
+        <h1 className="text-3xl font-bold font-headline">Coach IA</h1>
         <Button onClick={handleGenerateRecommendations} disabled={loading} size="lg" className="w-full sm:w-auto">
           {loading ? (
             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
           ) : (
             <BrainCircuit className="mr-2 h-5 w-5" />
           )}
-          {loading ? 'Analyzing Your Progress...' : hasGenerated ? 'Regenerate Recommendations' : 'Generate Recommendations'}
+          {loading ? 'Analizando tu progreso...' : hasGenerated ? 'Volver a generar' : 'Generar recomendaciones'}
         </Button>
       </div>
 
@@ -96,9 +96,9 @@ export default function RecommendationsPage() {
           <CardHeader>
             <CardTitle className="font-headline text-2xl flex items-center gap-2">
                 <Sparkles className="text-accent" /> 
-                Your Personalized Recommendations
+                Tus recomendaciones personalizadas
             </CardTitle>
-            <CardDescription>Based on your recent performance, here are some tips to improve your training.</CardDescription>
+            <CardDescription>Basado en tu rendimiento reciente, acá tenés algunos consejos para mejorar tu entrenamiento.</CardDescription>
           </CardHeader>
           <CardContent>
             <ul className="space-y-4">
@@ -123,9 +123,9 @@ export default function RecommendationsPage() {
                 <div className="p-6 bg-accent/10 rounded-full">
                     <BrainCircuit className="h-16 w-16 text-accent" />
                 </div>
-                <CardTitle className="font-headline text-2xl mt-4">Ready for your analysis?</CardTitle>
+                <CardTitle className="font-headline text-2xl mt-4">¿Listo para tu análisis?</CardTitle>
                 <p className="max-w-md text-muted-foreground">
-                    {hasGenerated ? "No new recommendations at this time. Keep logging your workouts!" : "Click 'Generate Recommendations' to get AI-powered insights on your training. Make sure you've logged some workouts first!"}
+                    {hasGenerated ? "No hay nuevas recomendaciones por ahora. ¡Seguí registrando tus entrenamientos!" : "Hacé clic en 'Generar recomendaciones' para obtener consejos de la IA sobre tu entrenamiento. ¡Asegurate de haber registrado algunos entrenamientos primero!"}
                 </p>
             </CardContent>
         </Card>

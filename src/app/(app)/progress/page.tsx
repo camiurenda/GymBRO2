@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from '@/components/ui/chart';
 import { CartesianGrid, Line, LineChart, XAxis, YAxis, Legend } from 'recharts';
 import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 type ExerciseData = {
   date: string;
@@ -17,7 +18,7 @@ type ExerciseData = {
 
 const chartConfig = {
   weight: {
-    label: "Weight (kg)",
+    label: "Peso (kg)",
     color: "hsl(var(--accent))",
   },
 } satisfies ChartConfig;
@@ -69,7 +70,7 @@ export default function ProgressPage() {
       const data = querySnapshot.docs.map(doc => {
         const log = doc.data() as ExerciseLog & { date: { toDate: () => Date } };
         return {
-          date: format(log.date.toDate(), 'MMM d'),
+          date: format(log.date.toDate(), 'd MMM', { locale: es }),
           weight: log.weight,
         };
       });
@@ -80,17 +81,17 @@ export default function ProgressPage() {
   
   return (
     <div className="container mx-auto">
-      <h1 className="mb-6 text-3xl font-bold font-headline">Your Progress</h1>
+      <h1 className="mb-6 text-3xl font-bold font-headline">Tu Progreso</h1>
       <Card>
         <CardHeader>
-          <CardTitle>Exercise Weight Progression</CardTitle>
-          <CardDescription>Track how the weight you lift for each exercise has evolved over time.</CardDescription>
+          <CardTitle>Progresión de Peso por Ejercicio</CardTitle>
+          <CardDescription>Seguí cómo el peso que levantás en cada ejercicio evolucionó con el tiempo.</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <Select onValueChange={setSelectedExercise} value={selectedExercise} disabled={loading || exerciseList.length === 0}>
                 <SelectTrigger className="w-full md:w-[300px]">
-                    <SelectValue placeholder="Select an exercise" />
+                    <SelectValue placeholder="Seleccioná un ejercicio" />
                 </SelectTrigger>
                 <SelectContent>
                     {exerciseList.map(ex => (
@@ -130,7 +131,7 @@ export default function ProgressPage() {
                 </ChartContainer>
             ) : (
                 <div className="flex h-[300px] w-full items-center justify-center rounded-lg border border-dashed text-muted-foreground">
-                    {loading ? "Loading..." : "Not enough data to display a chart. Log this exercise at least twice."}
+                    {loading ? "Cargando..." : "No hay suficientes datos para mostrar un gráfico. Registrá este ejercicio al menos dos veces."}
                 </div>
             )}
           </div>

@@ -27,8 +27,8 @@ export default function LoginPage() {
       router.push('/dashboard');
     } catch (error: any) {
       toast({
-        title: 'Login Failed',
-        description: "Please check your email and password.",
+        title: 'Falló el inicio de sesión',
+        description: "Revisá tu email y contraseña.",
         variant: 'destructive',
       });
       setLoading(false);
@@ -38,8 +38,8 @@ export default function LoginPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-2xl font-headline">Welcome Back</CardTitle>
-        <CardDescription>Enter your email below to login to your account</CardDescription>
+        <CardTitle className="text-2xl font-headline">¡Hola de nuevo!</CardTitle>
+        <CardDescription>Ingresá tu email para entrar a tu cuenta</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSignIn} className="space-y-4">
@@ -48,7 +48,7 @@ export default function LoginPage() {
             <Input
               id="email"
               type="email"
-              placeholder="m@example.com"
+              placeholder="m@ejemplo.com"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -56,7 +56,7 @@ export default function LoginPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Contraseña</Label>
             <Input
               id="password"
               type="password"
@@ -68,13 +68,13 @@ export default function LoginPage() {
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Sign In
+            Iniciar sesión
           </Button>
         </form>
         <div className="mt-4 text-center text-sm">
-          Don't have an account?{' '}
+          ¿No tenés cuenta?{' '}
           <Link href="/register" className="underline hover:text-primary">
-            Sign up
+            Registrate
           </Link>
         </div>
       </CardContent>

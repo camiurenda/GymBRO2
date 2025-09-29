@@ -4,8 +4,8 @@ import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'GymPlan - Your Personal Training Tracker',
-  description: 'Manage and track your gym training plans with AI-powered insights.',
+  title: 'GymPlan - Tu Monitor de Entrenamiento Personal',
+  description: 'Gestiona y sigue tus planes de entrenamiento con información potenciada por IA.',
 };
 
 export default function RootLayout({
@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="es" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

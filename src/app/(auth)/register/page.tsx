@@ -25,7 +25,7 @@ export default function RegisterPage() {
     if (password !== confirmPassword) {
       toast({
         title: 'Error',
-        description: 'Passwords do not match.',
+        description: 'Las contraseñas no coinciden.',
         variant: 'destructive',
       });
       return;
@@ -36,7 +36,7 @@ export default function RegisterPage() {
       router.push('/dashboard');
     } catch (error: any) {
       toast({
-        title: 'Registration Failed',
+        title: 'Falló el registro',
         description: error.message,
         variant: 'destructive',
       });
@@ -47,8 +47,8 @@ export default function RegisterPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-2xl font-headline">Create an Account</CardTitle>
-        <CardDescription>Enter your details to start tracking your progress</CardDescription>
+        <CardTitle className="text-2xl font-headline">Crear una cuenta</CardTitle>
+        <CardDescription>Ingresá tus datos para empezar a seguir tu progreso</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSignUp} className="space-y-4">
@@ -57,7 +57,7 @@ export default function RegisterPage() {
             <Input
               id="email"
               type="email"
-              placeholder="m@example.com"
+              placeholder="m@ejemplo.com"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -65,7 +65,7 @@ export default function RegisterPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Contraseña</Label>
             <Input
               id="password"
               type="password"
@@ -76,7 +76,7 @@ export default function RegisterPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="confirm-password">Confirm Password</Label>
+            <Label htmlFor="confirm-password">Confirmar contraseña</Label>
             <Input
               id="confirm-password"
               type="password"
@@ -88,13 +88,13 @@ export default function RegisterPage() {
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Sign Up
+            Registrarse
           </Button>
         </form>
         <div className="mt-4 text-center text-sm">
-          Already have an account?{' '}
+          ¿Ya tenés cuenta?{' '}
           <Link href="/login" className="underline hover:text-primary">
-            Sign in
+            Inicia sesión
           </Link>
         </div>
       </CardContent>

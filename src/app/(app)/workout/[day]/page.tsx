@@ -39,8 +39,8 @@ export default function WorkoutPage({ params }: { params: { day: string } }) {
           }
         }
       } catch (error) {
-        console.error("Error fetching workout:", error);
-        toast({ title: "Error", description: "Could not fetch your workout.", variant: "destructive" });
+        console.error("Error al buscar el entrenamiento:", error);
+        toast({ title: "Error", description: "No se pudo cargar tu entrenamiento.", variant: "destructive" });
       } finally {
         setLoading(false);
       }
@@ -59,7 +59,7 @@ export default function WorkoutPage({ params }: { params: { day: string } }) {
     
     const exercise = exercises[index];
     if (!exercise.weight || !exercise.reps) {
-        toast({ title: "Incomplete Data", description: "Please enter weight and reps.", variant: "destructive"});
+        toast({ title: "Datos incompletos", description: "Por favor, ingresá el peso y las repeticiones.", variant: "destructive"});
         return;
     }
 
@@ -77,15 +77,15 @@ export default function WorkoutPage({ params }: { params: { day: string } }) {
         newExercises[index].isCompleted = true;
         setExercises(newExercises);
 
-        toast({ title: "Success!", description: `${exercise.name} logged.` });
+        toast({ title: "¡Éxito!", description: `${exercise.name} registrado.` });
     } catch (error) {
-        toast({ title: "Error", description: "Could not log exercise.", variant: "destructive"});
+        toast({ title: "Error", description: "No se pudo registrar el ejercicio.", variant: "destructive"});
     }
   };
 
   if (loading) return <WorkoutLoadingSkeleton />;
-  if (!plan) return <div className="text-center text-muted-foreground">Could not find your active plan.</div>;
-  if (exercises.length === 0) return <div className="text-center text-muted-foreground">No exercises found for this day.</div>
+  if (!plan) return <div className="text-center text-muted-foreground">No se pudo encontrar tu plan activo.</div>;
+  if (exercises.length === 0) return <div className="text-center text-muted-foreground">No se encontraron ejercicios para este día.</div>
 
   const pendingExercises = exercises.filter(e => !e.isCompleted);
   const completedExercises = exercises.filter(e => e.isCompleted);
@@ -104,7 +104,7 @@ export default function WorkoutPage({ params }: { params: { day: string } }) {
 
         {completedExercises.length > 0 && (
           <div>
-            <h2 className="my-8 text-xl font-semibold text-center text-accent">Completed</h2>
+            <h2 className="my-8 text-xl font-semibold text-center text-accent">Completados</h2>
             <div className="space-y-6">
                 {completedExercises.map((exercise, idx) => {
                     const originalIndex = exercises.findIndex(e => e.name === exercise.name);
@@ -137,7 +137,7 @@ function ExerciseCard({ exercise, index, onComplete, onInputChange }: { exercise
             <CardContent>
                 <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                        <Label htmlFor={`weight-${index}`} className="text-base">Weight (kg)</Label>
+                        <Label htmlFor={`weight-${index}`} className="text-base">Peso (kg)</Label>
                         <Input id={`weight-${index}`} type="number" value={exercise.weight} onChange={e => onInputChange(index, 'weight', e.target.value)} className="h-16 text-center text-3xl font-bold" disabled={exercise.isCompleted || isSubmitting} />
                     </div>
                     <div className="space-y-2">
@@ -150,12 +150,12 @@ function ExerciseCard({ exercise, index, onComplete, onInputChange }: { exercise
                 {!exercise.isCompleted ? (
                     <Button onClick={handlePressComplete} size="lg" className="w-full py-7 text-lg" disabled={isSubmitting}>
                          {isSubmitting && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
-                        Mark as Completed
+                        Marcar como completado
                     </Button>
                 ) : (
                     <div className="flex w-full items-center justify-center gap-2 py-4 text-accent font-semibold">
                         <CheckCircle className="h-6 w-6"/>
-                        <span className="text-lg">Completed</span>
+                        <span className="text-lg">Completado</span>
                     </div>
                 )}
             </CardFooter>

@@ -31,7 +31,7 @@ export default function DashboardPage() {
 
     return (
         <div className="container mx-auto">
-            <h1 className="mb-6 text-3xl font-bold font-headline">Dashboard</h1>
+            <h1 className="mb-6 text-3xl font-bold font-headline">Panel de control</h1>
             {activePlan ? (
                 <CurrentPlan plan={activePlan} />
             ) : (
@@ -49,7 +49,7 @@ function CurrentPlan({ plan }: { plan: TrainingPlan }) {
     });
     return (
         <div>
-            <h2 className="mb-4 text-2xl font-semibold font-headline">Your Current Plan: {plan.name}</h2>
+            <h2 className="mb-4 text-2xl font-semibold font-headline">Tu plan actual: {plan.name}</h2>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {days.map(day => (
                     <Link href={`/workout/${day.replace(/ /g, '-').toLowerCase()}`} key={day} passHref>
@@ -68,14 +68,14 @@ function NoPlan() {
     return (
         <Card className="text-center">
             <CardHeader>
-                <CardTitle className="font-headline text-2xl">No Active Plan Found</CardTitle>
+                <CardTitle className="font-headline text-2xl">No se encontró un plan activo</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col items-center gap-4 p-8">
-                <p className="text-muted-foreground">It looks like you don't have a training plan set up yet.</p>
+                <p className="text-muted-foreground">Parece que todavía no tenés un plan de entrenamiento.</p>
                 <Link href="/import" passHref>
                     <Button size="lg">
                         <PlusCircle className="mr-2 h-5 w-5" />
-                        Import Your First Plan
+                        Importá tu primer plan
                     </Button>
                 </Link>
             </CardContent>

@@ -2,14 +2,14 @@
   "placeholderImages": [
     {
       "id": "auth-hero",
-      "description": "A person working out in a modern gym, lifting weights.",
-      "imageUrl": "https://picsum.photos/seed/gymplan-auth/1280/853",
+      "description": "Una persona entrenando en un gimnasio moderno, levantando pesas.",
+      "imageUrl": "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxneW0lMjB3b3Jrb3V0fGVufDB8fHx8MTc1OTEyMTA5Mnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "gym workout"
     },
     {
       "id": "dashboard-welcome",
-      "description": "An empty modern gym with equipment ready for a workout.",
-      "imageUrl": "https://picsum.photos/seed/gymplan-dash/1200/400",
+      "description": "Un gimnasio moderno vacío con equipamiento listo para un entrenamiento.",
+      "imageUrl": "https://images.unsplash.com/photo-1584827387150-8ae4caebe906?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxneW0lMjBlcXVpcG1lbnR8ZW58MHx8fHwxNzU5MTU3NjI1fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "gym equipment"
     }
   ]

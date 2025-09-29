@@ -44,7 +44,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       <div className="flex h-screen w-full items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
           <div className="h-12 w-12 animate-spin rounded-full border-4 border-solid border-primary border-t-transparent"></div>
-          <p className="text-muted-foreground">Loading Your Dashboard...</p>
+          <p className="text-muted-foreground">Cargando tu panel...</p>
         </div>
       </div>
     );
@@ -56,10 +56,10 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   };
 
   const navItems = [
-    { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { href: '/progress', icon: BarChart3, label: 'Progress' },
-    { href: '/recommendations', icon: BrainCircuit, label: 'AI Coach' },
-    { href: '/import', icon: Upload, label: 'Import Plan' },
+    { href: '/dashboard', icon: LayoutDashboard, label: 'Panel' },
+    { href: '/progress', icon: BarChart3, label: 'Progreso' },
+    { href: '/recommendations', icon: BrainCircuit, label: 'Coach IA' },
+    { href: '/import', icon: Upload, label: 'Importar Plan' },
   ]
 
   return (
@@ -91,7 +91,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             <div className="flex-1 overflow-hidden group-data-[collapsible=icon]:hidden">
                 <p className="truncate text-sm font-medium">{user.email}</p>
             </div>
-            <Button variant="ghost" size="icon" onClick={handleSignOut} className="h-8 w-8 shrink-0 group-data-[collapsible=icon]:absolute group-data-[collapsible=icon]:left-2 group-data-[collapsible=icon]:top-2">
+            <Button variant="ghost" size="icon" onClick={handleSignOut} className="h-8 w-8 shrink-0 group-data-[collapsible=icon]:absolute group-data-[collapsible=icon]:left-2 group-data-[collapsible=icon]:top-2" title="Cerrar sesión">
               <LogOut className="h-4 w-4" />
             </Button>
           </div>
