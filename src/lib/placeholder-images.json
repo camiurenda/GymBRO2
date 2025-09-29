@@ -1,3 +1,16 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "auth-hero",
+      "description": "A person working out in a modern gym, lifting weights.",
+      "imageUrl": "https://picsum.photos/seed/gymplan-auth/1280/853",
+      "imageHint": "gym workout"
+    },
+    {
+      "id": "dashboard-welcome",
+      "description": "An empty modern gym with equipment ready for a workout.",
+      "imageUrl": "https://picsum.photos/seed/gymplan-dash/1200/400",
+      "imageHint": "gym equipment"
+    }
+  ]
 }
