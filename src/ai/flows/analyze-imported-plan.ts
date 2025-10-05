@@ -13,10 +13,10 @@ import {ai} from '@/ai/genkit';
 import {z} from 'zod';
 
 const AnalyzeImportedPlanInputSchema = z.object({
-  xlsxDataUri: z
+  xlsxContent: z
     .string()
     .describe(
-      "The XLSX training plan file as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'"
+      "The XLSX training plan file content converted to text format, with each sheet and row clearly labeled"
     ),
 });
 export type AnalyzeImportedPlanInput = z.infer<typeof AnalyzeImportedPlanInputSchema>;
@@ -25,10 +25,10 @@ const AnalyzeImportedPlanOutputSchema = z.object({
   numberOfTrainingDays: z
     .number()
     .describe('The number of training days in the plan.'),
-  exercisesByDay: z.record(
-    z.string().describe('Day number'),
-    z.array(z.string()).describe('List of exercises for the day')
-  ),
+  exercisesByDay: z.array(z.object({
+    day: z.string().describe('Day number'),
+    exercises: z.array(z.string()).describe('List of exercises for the day')
+  })).describe('List of training days with their exercises'),
 });
 export type AnalyzeImportedPlanOutput = z.infer<typeof AnalyzeImportedPlanOutputSchema>;
 
@@ -42,15 +42,15 @@ const prompt = ai.definePrompt({
   name: 'analyzeImportedPlanPrompt',
   input: {schema: AnalyzeImportedPlanInputSchema},
   output: {schema: AnalyzeImportedPlanOutputSchema},
-  prompt: `You are a personal trainer who will analyze a workout plan in XLSX format.
+  prompt: `You are a personal trainer who will analyze a workout plan.
 
     Your goal is to extract the following information:
     - How many training days are in the plan?
     - What exercises correspond to each day?
     - Extract the name of each exercise, cleaning the text of sets/reps (e.g., "Squats 3x10" becomes "Squats").
 
-    Here is the workout plan in XLSX format:
-    {{media url=xlsxDataUri}}
+    Here is the workout plan content:
+    {{xlsxContent}}
   `,
 });
 

@@ -1,6 +1,7 @@
-import { collection, query, where, getDocs, limit, addDoc, serverTimestamp, getDoc, doc, writeBatch } from 'firebase/firestore';
+import { collection, query, where, getDocs, limit, addDoc, serverTimestamp, getDoc, doc, writeBatch, Timestamp } from 'firebase/firestore';
 import { db } from './config';
 import type { TrainingPlan, ExerciseLog } from '../types';
+import { startOfWeek } from 'date-fns';
 
 export async function getActivePlan(userId: string): Promise<TrainingPlan | null> {
   const plansCollection = collection(db, 'plans');
@@ -47,4 +48,25 @@ export async function logExercise(logData: Omit<ExerciseLog, 'id' | 'date' >) {
     ...logData,
     date: serverTimestamp()
   });
+}
+
+export async function getCompletedExercisesThisWeek(userId: string, planId: string, day: string): Promise<Set<string>> {
+  const weekStart = startOfWeek(new Date(), { weekStartsOn: 0 }); // Domingo = 0
+  const logsCollection = collection(db, 'training_logs');
+  const q = query(
+    logsCollection,
+    where('userId', '==', userId),
+    where('planId', '==', planId),
+    where('day', '==', day),
+    where('date', '>=', Timestamp.fromDate(weekStart))
+  );
+
+  const querySnapshot = await getDocs(q);
+  const completedExercises = new Set<string>();
+  querySnapshot.forEach(doc => {
+    const data = doc.data();
+    completedExercises.add(data.exerciseName);
+  });
+
+  return completedExercises;
 }

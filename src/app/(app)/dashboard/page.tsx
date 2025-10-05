@@ -16,12 +16,17 @@ export default function DashboardPage() {
 
     useEffect(() => {
         if (user) {
-            const unsubscribe = async () => {
-                const plan = await getActivePlan(user.uid);
-                setActivePlan(plan);
+            const loadPlan = async () => {
+                try {
+                    const plan = await getActivePlan(user.uid);
+                    setActivePlan(plan);
+                } catch (error) {
+                    console.log('Firestore error (continuing without plan):', error);
+                    setActivePlan(null);
+                }
                 setLoading(false);
             };
-            unsubscribe();
+            loadPlan();
         }
     }, [user]);
 
@@ -42,11 +47,13 @@ export default function DashboardPage() {
 }
 
 function CurrentPlan({ plan }: { plan: TrainingPlan }) {
-    const days = Object.keys(plan.exercisesByDay).sort((a, b) => {
-        const numA = parseInt(a.replace(/[^0-9]/g, ''));
-        const numB = parseInt(b.replace(/[^0-9]/g, ''));
-        return numA - numB;
-    });
+    const days = Object.keys(plan.exercisesByDay)
+        .filter(day => plan.exercisesByDay[day] && plan.exercisesByDay[day].length > 0)
+        .sort((a, b) => {
+            const numA = parseInt(a.replace(/[^0-9]/g, ''));
+            const numB = parseInt(b.replace(/[^0-9]/g, ''));
+            return numA - numB;
+        });
     return (
         <div>
             <h2 className="mb-4 text-2xl font-semibold font-headline">Tu plan actual: {plan.name}</h2>

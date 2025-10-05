@@ -12,6 +12,7 @@ import { collection, writeBatch, query, where, getDocs, doc } from 'firebase/fir
 import { db } from '@/lib/firebase/config';
 import { Loader2, Upload } from 'lucide-react';
 import { addDays } from 'date-fns';
+import * as XLSX from 'xlsx';
 
 export default function ImportPage() {
   const { user } = useAuth();
@@ -36,12 +37,30 @@ export default function ImportPage() {
 
     try {
       const reader = new FileReader();
-      reader.readAsDataURL(file);
+      reader.readAsArrayBuffer(file);
       reader.onload = async () => {
-        const dataUri = reader.result as string;
-        
+        const arrayBuffer = reader.result as ArrayBuffer;
+
         try {
-            const analysis = await analyzeImportedPlan({ xlsxDataUri: dataUri });
+            // Parse XLSX file
+            const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+
+            // Convert all sheets to text format
+            let xlsxContent = '';
+            workbook.SheetNames.forEach((sheetName) => {
+              xlsxContent += `\n\nSheet: ${sheetName}\n`;
+              const sheet = workbook.Sheets[sheetName];
+              const csvText = XLSX.utils.sheet_to_csv(sheet);
+              xlsxContent += csvText;
+            });
+
+            const analysis = await analyzeImportedPlan({ xlsxContent });
+
+            // Convert array format to record format
+            const exercisesByDay: Record<string, string[]> = {};
+            analysis.exercisesByDay.forEach((dayData) => {
+              exercisesByDay[dayData.day] = dayData.exercises;
+            });
 
             const batch = writeBatch(db);
 
@@ -59,7 +78,7 @@ export default function ImportPage() {
                 isActive: true,
                 startDate: new Date(),
                 endDate: addDays(new Date(), 60), // Plan duration of 2 months
-                exercisesByDay: analysis.exercisesByDay,
+                exercisesByDay: exercisesByDay,
                 numberOfDays: analysis.numberOfTrainingDays
             };
             batch.set(newPlanRef, newPlan);

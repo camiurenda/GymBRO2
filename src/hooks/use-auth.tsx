@@ -19,14 +19,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const userRef = doc(db, 'users', user.uid);
-        const docSnap = await getDoc(userRef);
-        if (!docSnap.exists()) {
-          await setDoc(userRef, {
-            email: user.email,
-            displayName: user.displayName,
-            createdAt: serverTimestamp(),
-          });
+        try {
+          const userRef = doc(db, 'users', user.uid);
+          const docSnap = await getDoc(userRef);
+          if (!docSnap.exists()) {
+            await setDoc(userRef, {
+              email: user.email,
+              displayName: user.displayName,
+              createdAt: serverTimestamp(),
+            });
+          }
+        } catch (error) {
+          console.log('Firestore error (continuing without database):', error);
         }
       }
       setUser(user);

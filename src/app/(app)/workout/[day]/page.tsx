@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useAuth } from '@/hooks/use-auth';
-import { getActivePlan, getExercisesForDay, logExercise } from '@/lib/firebase/firestore';
+import { getActivePlan, getExercisesForDay, logExercise, getCompletedExercisesThisWeek } from '@/lib/firebase/firestore';
 import type { TrainingPlan } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -19,7 +19,8 @@ type ExerciseState = {
   isCompleted: boolean;
 };
 
-export default function WorkoutPage({ params }: { params: { day: string } }) {
+export default function WorkoutPage({ params }: { params: Promise<{ day: string }> }) {
+  const { day } = use(params);
   const { user } = useAuth();
   const { toast } = useToast();
   const [exercises, setExercises] = useState<ExerciseState[]>([]);
@@ -33,9 +34,16 @@ export default function WorkoutPage({ params }: { params: { day: string } }) {
         const activePlan = await getActivePlan(user.uid);
         if (activePlan) {
           setPlan(activePlan);
-          const exerciseList = await getExercisesForDay(activePlan.id, params.day);
-          if (exerciseList) {
-            setExercises(exerciseList.map(name => ({ name, weight: '', reps: '', isCompleted: false })));
+          const exerciseList = await getExercisesForDay(activePlan.id, day);
+          if (exerciseList && Array.isArray(exerciseList)) {
+            // Get completed exercises this week
+            const completedThisWeek = await getCompletedExercisesThisWeek(user.uid, activePlan.id, day);
+            setExercises(exerciseList.map(name => ({
+              name,
+              weight: '',
+              reps: '',
+              isCompleted: completedThisWeek.has(name)
+            })));
           }
         }
       } catch (error) {
@@ -46,7 +54,7 @@ export default function WorkoutPage({ params }: { params: { day: string } }) {
       }
     }
     fetchWorkout();
-  }, [user, params.day, toast]);
+  }, [user, day, toast]);
   
   const handleInputChange = (index: number, field: 'weight' | 'reps', value: string) => {
     const newExercises = [...exercises];
@@ -67,7 +75,7 @@ export default function WorkoutPage({ params }: { params: { day: string } }) {
         await logExercise({
             userId: user.uid,
             planId: plan.id,
-            day: params.day,
+            day: day,
             exerciseName: exercise.name,
             weight: parseFloat(exercise.weight),
             reps: parseInt(exercise.reps)
@@ -89,7 +97,7 @@ export default function WorkoutPage({ params }: { params: { day: string } }) {
 
   const pendingExercises = exercises.filter(e => !e.isCompleted);
   const completedExercises = exercises.filter(e => e.isCompleted);
-  const dayTitle = params.day.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  const dayTitle = day.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
   return (
     <div className="container mx-auto max-w-2xl">
