@@ -42,14 +42,20 @@ const prompt = ai.definePrompt({
   name: 'analyzeImportedPlanPrompt',
   input: {schema: AnalyzeImportedPlanInputSchema},
   output: {schema: AnalyzeImportedPlanOutputSchema},
-  prompt: `You are a personal trainer who will analyze a workout plan.
+  prompt: `Eres un entrenador personal que analizará un plan de entrenamiento.
 
-    Your goal is to extract the following information:
-    - How many training days are in the plan?
-    - What exercises correspond to each day?
-    - Extract the name of each exercise, cleaning the text of sets/reps (e.g., "Squats 3x10" becomes "Squats").
+    Tu objetivo es extraer la siguiente información:
+    - ¿Cuántos días de entrenamiento hay en el plan?
+    - ¿Qué ejercicios corresponden a cada día?
+    - Extraer el nombre de cada ejercicio, limpiando el texto de series/repeticiones (ej: "Sentadillas 3x10" se convierte en "Sentadillas").
+    - IMPORTANTE: Corregir errores de ortografía y nombres mal escritos de ejercicios. Por ejemplo:
+      * "abeduccion" → "Abducción"
+      * "puenta ateral dinamico" → "Puente Lateral Dinámico"
+      * "press banca" → "Press De Banca"
+      * Verificar que los nombres de ejercicios estén correctamente escritos en español.
+      * TODOS los nombres de ejercicios deben estar en Proper Case (Primera Letra De Cada Palabra En Mayúscula).
 
-    Here is the workout plan content:
+    Aquí está el contenido del plan de entrenamiento:
     {{xlsxContent}}
   `,
 });

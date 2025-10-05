@@ -39,15 +39,21 @@ const prompt = ai.definePrompt({
   name: 'processImportedPlanPrompt',
   input: {schema: ProcessImportedPlanInputSchema},
   output: {schema: ProcessImportedPlanOutputSchema},
-  prompt: `You are a personal trainer who will analyze a workout plan in XLSX format to extract training days and exercises.
+  prompt: `Eres un entrenador personal que analizará un plan de entrenamiento en formato XLSX para extraer días de entrenamiento y ejercicios.
 
-Your goal is to:
-1.  Identify each training day in the plan (e.g., Day 1, Day 2, etc.).
-2.  For each day, extract the list of exercises.
-3.  Clean the exercise names by removing sets/reps information (e.g., "Squats 3x10" becomes "Squats").
-4.  Return the data in JSON format with a list of trainingDays, each with the day and an array of exercises.
+Tu objetivo es:
+1.  Identificar cada día de entrenamiento en el plan (ej: Día 1, Día 2, etc.).
+2.  Para cada día, extraer la lista de ejercicios.
+3.  Limpiar los nombres de los ejercicios eliminando información de series/repeticiones (ej: "Sentadillas 3x10" se convierte en "Sentadillas").
+4.  IMPORTANTE: Corregir errores de ortografía y nombres mal escritos de ejercicios. Por ejemplo:
+    - "abeduccion" → "Abducción"
+    - "puenta ateral dinamico" → "Puente Lateral Dinámico"
+    - "press banca" → "Press De Banca"
+    - Verificar que los nombres de ejercicios estén correctamente escritos en español.
+    - TODOS los nombres de ejercicios deben estar en Proper Case (Primera Letra De Cada Palabra En Mayúscula).
+5.  Devolver los datos en formato JSON con una lista de trainingDays, cada uno con el día y un array de ejercicios.
 
-Here is the workout plan in XLSX format:
+Aquí está el plan de entrenamiento en formato XLSX:
 {{media url=xlsxDataUri}}
   `,
 });
