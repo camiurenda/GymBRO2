@@ -3,7 +3,7 @@ import { ReactNode, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import { signOut } from 'firebase/auth';
-import { auth } from '@/lib/firebase/config';
+import { getFirebaseAuth } from '@/lib/firebase/config';
 import Link from 'next/link';
 
 import {
@@ -35,6 +35,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   }, [user, loading, router]);
 
   const handleSignOut = async () => {
+    const auth = getFirebaseAuth();
     await signOut(auth);
     router.push('/login');
   };

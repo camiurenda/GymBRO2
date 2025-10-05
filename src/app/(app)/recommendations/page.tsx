@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { BrainCircuit, Loader2, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { collection, getDocs, query, where, orderBy, Timestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase/config';
+import { getFirebaseDb } from '@/lib/firebase/config';
 import { generatePersonalizedRecommendations } from '@/ai/flows/generate-personalized-recommendations';
 import type { ExerciseLog } from '@/lib/types';
 
@@ -27,6 +27,7 @@ export default function RecommendationsPage() {
     setRecommendations([]);
 
     try {
+      const db = getFirebaseDb();
       const logsRef = collection(db, 'training_logs');
       const q = query(
         logsRef,

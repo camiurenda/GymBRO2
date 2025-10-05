@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
-import { db } from '@/lib/firebase/config';
+import { getFirebaseDb } from '@/lib/firebase/config';
 import type { ExerciseLog } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -35,6 +35,7 @@ export default function ProgressPage() {
     async function fetchExercises() {
       if (!user) return;
       setLoading(true);
+      const db = getFirebaseDb();
       const logsRef = collection(db, 'training_logs');
       const q = query(logsRef, where('userId', '==', user.uid));
       const querySnapshot = await getDocs(q);
@@ -59,6 +60,7 @@ export default function ProgressPage() {
         setExerciseData([]);
         return;
       };
+      const db = getFirebaseDb();
       const logsRef = collection(db, 'training_logs');
       const q = query(
         logsRef,

@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { analyzeImportedPlan } from '@/ai/flows/analyze-imported-plan';
 import { collection, writeBatch, query, where, getDocs, doc } from 'firebase/firestore';
-import { db } from '@/lib/firebase/config';
+import { getFirebaseDb } from '@/lib/firebase/config';
 import { Loader2, Upload } from 'lucide-react';
 import { addDays } from 'date-fns';
 import * as XLSX from 'xlsx';
@@ -62,6 +62,7 @@ export default function ImportPage() {
               exercisesByDay[dayData.day] = dayData.exercises;
             });
 
+            const db = getFirebaseDb();
             const batch = writeBatch(db);
 
             const plansRef = collection(db, 'plans');
