@@ -59,24 +59,49 @@ export default function ProgressPage() {
       if (!user || !selectedExercise) {
         setExerciseData([]);
         return;
-      };
-      const db = getFirebaseDb();
-      const logsRef = collection(db, 'training_logs');
-      const q = query(
-        logsRef,
-        where('userId', '==', user.uid),
-        where('exerciseName', '==', selectedExercise),
-        orderBy('date', 'asc')
-      );
-      const querySnapshot = await getDocs(q);
-      const data = querySnapshot.docs.map(doc => {
-        const log = doc.data() as ExerciseLog & { date: { toDate: () => Date } };
-        return {
-          date: format(log.date.toDate(), 'd MMM', { locale: es }),
-          weight: log.weight,
-        };
-      });
-      setExerciseData(data);
+      }
+
+      try {
+        const db = getFirebaseDb();
+        const logsRef = collection(db, 'training_logs');
+        // Removed orderBy to avoid requiring a composite index
+        const q = query(
+          logsRef,
+          where('userId', '==', user.uid),
+          where('exerciseName', '==', selectedExercise)
+        );
+
+        const querySnapshot = await getDocs(q);
+        console.log(`Found ${querySnapshot.docs.length} logs for ${selectedExercise}`);
+
+        // Map and sort data on client side
+        const data = querySnapshot.docs
+          .map(doc => {
+            const log = doc.data();
+            console.log('Log data:', log);
+
+            // Validate that date exists and is a Timestamp
+            if (!log.date || typeof log.date.toDate !== 'function') {
+              console.error('Invalid date in log:', log);
+              return null;
+            }
+
+            return {
+              date: format(log.date.toDate(), 'd MMM', { locale: es }),
+              weight: log.weight,
+              timestamp: log.date.toDate().getTime(), // For sorting
+            };
+          })
+          .filter((item): item is { date: string; weight: number; timestamp: number } => item !== null)
+          .sort((a, b) => a.timestamp - b.timestamp) // Sort by timestamp
+          .map(({ date, weight }) => ({ date, weight })); // Remove timestamp from final data
+
+        console.log('Processed data:', data);
+        setExerciseData(data);
+      } catch (error) {
+        console.error('Error fetching exercise data:', error);
+        setExerciseData([]);
+      }
     }
     fetchExerciseData();
   }, [user, selectedExercise]);
@@ -103,37 +128,54 @@ export default function ProgressPage() {
             </Select>
 
             {exerciseData.length > 1 ? (
-                <ChartContainer config={chartConfig} className="h-[300px] w-full">
-                    <LineChart data={exerciseData} margin={{ left: 12, right: 12, top: 10, bottom: 10 }}>
-                        <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                        <XAxis
-                            dataKey="date"
-                            tickLine={false}
-                            axisLine={false}
-                            tickMargin={8}
-                        />
-                        <YAxis 
-                            domain={['dataMin - 5', 'dataMax + 5']}
-                            tickLine={false}
-                            axisLine={false}
-                            tickMargin={8}
-                            tickFormatter={(value) => `${value} kg`}
-                        />
-                        <ChartTooltip cursor={{ strokeDasharray: '3 3' }} content={<ChartTooltipContent />} />
-                        <Legend />
-                        <Line
-                            dataKey="weight"
-                            type="monotone"
-                            stroke="var(--color-weight)"
-                            strokeWidth={3}
-                            dot={{ fill: 'var(--color-weight)', r: 4 }}
-                            activeDot={{ r: 8 }}
-                        />
-                    </LineChart>
-                </ChartContainer>
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">
+                    {exerciseData.length} registros encontrados
+                  </p>
+                  <ChartContainer config={chartConfig} className="h-[300px] w-full">
+                      <LineChart data={exerciseData} margin={{ left: 12, right: 12, top: 10, bottom: 10 }}>
+                          <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                          <XAxis
+                              dataKey="date"
+                              tickLine={false}
+                              axisLine={false}
+                              tickMargin={8}
+                          />
+                          <YAxis
+                              domain={['dataMin - 5', 'dataMax + 5']}
+                              tickLine={false}
+                              axisLine={false}
+                              tickMargin={8}
+                              tickFormatter={(value) => `${value} kg`}
+                          />
+                          <ChartTooltip cursor={{ strokeDasharray: '3 3' }} content={<ChartTooltipContent />} />
+                          <Legend />
+                          <Line
+                              dataKey="weight"
+                              type="monotone"
+                              stroke="var(--color-weight)"
+                              strokeWidth={3}
+                              dot={{ fill: 'var(--color-weight)', r: 4 }}
+                              activeDot={{ r: 8 }}
+                          />
+                      </LineChart>
+                  </ChartContainer>
+                </div>
             ) : (
-                <div className="flex h-[300px] w-full items-center justify-center rounded-lg border border-dashed text-muted-foreground">
-                    {loading ? "Cargando..." : "No hay suficientes datos para mostrar un gráfico. Registrá este ejercicio al menos dos veces."}
+                <div className="flex h-[300px] w-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed text-muted-foreground">
+                    {loading ? (
+                      <p>Cargando...</p>
+                    ) : exerciseData.length === 0 ? (
+                      <>
+                        <p className="font-semibold">No hay datos registrados para este ejercicio</p>
+                        <p className="text-sm">Registrá este ejercicio en tu entrenamiento para ver tu progreso</p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="font-semibold">Solo hay 1 registro</p>
+                        <p className="text-sm">Registrá este ejercicio al menos una vez más para ver el gráfico de progreso</p>
+                      </>
+                    )}
                 </div>
             )}
           </div>
