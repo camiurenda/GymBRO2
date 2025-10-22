@@ -2,13 +2,14 @@
 
 import { useState, useEffect, use } from 'react';
 import { useAuth } from '@/hooks/use-auth';
-import { getActivePlan, getExercisesForDay, logExercise, getCompletedExercisesThisWeek } from '@/lib/firebase/firestore';
+import { getActivePlan, getExercisesForDay, logExercise, getCompletedExercisesThisWeek, getMaxWeightsForExercises } from '@/lib/firebase/firestore';
 import type { TrainingPlan } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { CheckCircle, Loader2 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { CheckCircle, Loader2, Trophy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -17,6 +18,7 @@ type ExerciseState = {
   weight: string;
   reps: string;
   isCompleted: boolean;
+  maxWeight?: number;
 };
 
 export default function WorkoutPage({ params }: { params: Promise<{ day: string }> }) {
@@ -38,11 +40,14 @@ export default function WorkoutPage({ params }: { params: Promise<{ day: string 
           if (exerciseList && Array.isArray(exerciseList)) {
             // Get completed exercises this week
             const completedThisWeek = await getCompletedExercisesThisWeek(user.uid, activePlan.id, day);
+            // Get max weights for all exercises
+            const maxWeights = await getMaxWeightsForExercises(user.uid, exerciseList);
             setExercises(exerciseList.map(name => ({
               name,
               weight: '',
               reps: '',
-              isCompleted: completedThisWeek.has(name)
+              isCompleted: completedThisWeek.has(name),
+              maxWeight: maxWeights[name]
             })));
           }
         }
@@ -130,17 +135,25 @@ export default function WorkoutPage({ params }: { params: Promise<{ day: string 
 
 function ExerciseCard({ exercise, index, onComplete, onInputChange }: { exercise: ExerciseState, index: number, onComplete: (index: number) => Promise<void>, onInputChange: (index: number, field: 'weight' | 'reps', value: string) => void }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
-    
+
     const handlePressComplete = async () => {
         setIsSubmitting(true);
         await onComplete(index);
         // No need to set isSubmitting to false, as the component will re-render as completed.
     }
-    
+
     return (
         <Card className={exercise.isCompleted ? 'border-2 border-accent bg-accent/10' : ''}>
             <CardHeader>
-                <CardTitle className="font-headline text-2xl">{exercise.name}</CardTitle>
+                <div className="flex items-start justify-between gap-2">
+                    <CardTitle className="font-headline text-2xl">{exercise.name}</CardTitle>
+                    {exercise.maxWeight && (
+                        <Badge variant="secondary" className="flex items-center gap-1 shrink-0">
+                            <Trophy className="h-3 w-3" />
+                            {exercise.maxWeight} kg
+                        </Badge>
+                    )}
+                </div>
             </CardHeader>
             <CardContent>
                 <div className="grid grid-cols-2 gap-4">

@@ -74,3 +74,32 @@ export async function getCompletedExercisesThisWeek(userId: string, planId: stri
 
   return completedExercises;
 }
+
+export async function getMaxWeightsForExercises(userId: string, exerciseNames: string[]): Promise<Record<string, number>> {
+  const db = getFirebaseDb();
+  const logsCollection = collection(db, 'training_logs');
+  const maxWeights: Record<string, number> = {};
+
+  // Query all logs for this user
+  const q = query(
+    logsCollection,
+    where('userId', '==', userId)
+  );
+
+  const querySnapshot = await getDocs(q);
+
+  // Calculate max weight for each exercise
+  querySnapshot.forEach(doc => {
+    const data = doc.data();
+    const exerciseName = data.exerciseName;
+    const weight = data.weight;
+
+    if (exerciseNames.includes(exerciseName)) {
+      if (!maxWeights[exerciseName] || weight > maxWeights[exerciseName]) {
+        maxWeights[exerciseName] = weight;
+      }
+    }
+  });
+
+  return maxWeights;
+}
